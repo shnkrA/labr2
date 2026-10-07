@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Docker Multi-Container App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f9;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>🚀 Список користувачів (з БД через API Gateway)</h1>
+        <ul id="users-list">Завантаження...</ul>
+    </div>
+
+    <div class="card">
+        <h2>ℹ️ Інформація про сервіс (/api/info)</h2>
+        <pre id="info-data">Завантаження...</pre>
+    </div>
+
+    <script>
+        // Запити йдуть через API Gateway на порт 80 (/api/...)
+        fetch('/api/users')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('users-list');
+                list.innerHTML = '';
+                data.forEach(u => {
+                    const li = document.createElement('li');
+                    li.textContent = `ID: ${u.id} | Ім'я: ${u.name} | Email: ${u.email}`;
+                    list.appendChild(li);
+                });
+            })
+            .catch(err => console.error(err));
+
+        fetch('/api/info')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('info-data').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(err => console.error(err));
+    </script>
+</body>
+
+</html>
